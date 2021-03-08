@@ -1,0 +1,5 @@
+ArduinoServer/__pycache__/*
+*.pyc
+*.sublime-*
+*.exe
+*.db

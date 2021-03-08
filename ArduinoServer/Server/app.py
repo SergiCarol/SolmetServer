@@ -8,10 +8,14 @@ import secrets
 import datetime
 import pytz
 import json
+import configparser
+
+config = configparser.ConfigParser()
+config.read('config.cfg')
 
 app = Flask(__name__)
 #pp.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Sergi\\Documents\\Projects\\arduinosolo-webpage\\ArduinoServer\\Server\\DB\\test.db'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Sergi\\Documents\\Arduino_Repo\\ArduinoSolMet\\ArduinoServer\\Server\\DB\\test.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = config['DEFAULT']['URI']
 from models import db, User, Arduino, Schedule, Data
 CORS(app)
 db.init_app(app)
@@ -98,7 +102,7 @@ def upload():
     request.json['humidity'] = 1
     record = Data(**request.json)
     record.save()
-    """
+
     services = Schedule.query.filter_by(arduino=_get_user(key))
 
     service_json = dict()

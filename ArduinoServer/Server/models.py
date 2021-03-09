@@ -2,6 +2,9 @@ from flask_sqlalchemy import SQLAlchemy
 from mongoengine import *
 
 
+from app import app
+db = SQLAlchemy(app)
+
 class User(db.Model):
     __tablename__ = 'user'
 
@@ -41,5 +44,3 @@ class Data(Document):
     water_electrodes = FloatField(max_length=50)
     api_key = StringField(max_length=50)
 
-from app import app
-db = SQLAlchemy(app)

@@ -265,3 +265,6 @@ def _get_arduino(api_key):
     if arduino is None:
         return False
     return arduino
+
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

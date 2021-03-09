@@ -16,9 +16,7 @@ config.read('config.cfg')
 app = Flask(__name__)
 #pp.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Sergi\\Documents\\Projects\\arduinosolo-webpage\\ArduinoServer\\Server\\DB\\test.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = config['DEFAULT']['URI']
-from models import db, User, Arduino, Schedule, Data
-CORS(app)
-db.init_app(app)
+
 #migrate = Migrate(app, db)
 client = connect('arduino_data')
 
@@ -267,4 +265,7 @@ def _get_arduino(api_key):
     return arduino
 
 if __name__ == "__main__":
+    from models import db, User, Arduino, Schedule, Data
+    CORS(app)
+    db.init_app(app)
     app.run(host='0.0.0.0')

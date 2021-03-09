@@ -3,3 +3,4 @@ ArduinoServer/__pycache__/*
 *.sublime-*
 *.exe
 *.db
+*.cfg

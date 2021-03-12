@@ -101,7 +101,7 @@ def upload():
     record = Data(**request.json)
     record.save()
 
-    services = Schedule.query.filter_by(arduino=_get_user(key))
+    services = Schedule.query.filter_by(arduino=_get_user(key).id)
 
     service_json = dict()
     now = datetime.datetime.now().hour

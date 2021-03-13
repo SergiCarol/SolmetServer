@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from mongoengine import connect
 from flask_cors import CORS
 from bson import json_util
+import dateutil.parser
 #from flask_migrate import Migrate
 import os
 import secrets
@@ -115,7 +116,7 @@ def upload():
 
     for service in services:
         print(service.start_time)
-        service_json[service.service] = service.start_time.hour <= now <= service.end_time.hour
+        service_json[service.service] = dateutil.parser.isoparse(service.start_time).hour <= now <= dateutil.parser.isoparse(service.end_time).hour
     print("Returning data", service_json)
     return jsonify(service_json)
 
@@ -269,7 +270,8 @@ def _get_user(api_key):
 
 def _get_arduino(api_key):
     arduino = Arduino.query.filter_by(api_key=api_key).first()
-    print(arduino)
+    if arduino is None:
+        return False    
     return arduino
 
 if __name__ == "__main__":

@@ -108,12 +108,13 @@ def upload():
     record = Data(**data)
     record.save()
 
-    services = Schedule.query.filter_by(arduino=_get_user(key).id)
+    services = Schedule.query.filter_by(arduino=_get_arduino(key))
 
     service_json = dict()
     now = datetime.datetime.now().hour
 
     for service in services:
+        print(service.start_time)
         service_json[service.service] = service.start_time.hour <= now <= service.end_time.hour
     print("Returning data", service_json)
     return jsonify(service_json)
@@ -268,8 +269,7 @@ def _get_user(api_key):
 
 def _get_arduino(api_key):
     arduino = Arduino.query.filter_by(api_key=api_key).first()
-    if arduino is None:
-        return False
+    print(arduino)
     return arduino
 
 if __name__ == "__main__":

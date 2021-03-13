@@ -16,7 +16,8 @@ config.read('config.cfg')
 app = Flask(__name__)
 #pp.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///C:\\Users\\Sergi\\Documents\\Projects\\arduinosolo-webpage\\ArduinoServer\\Server\\DB\\test.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = config['DEFAULT']['URI']
-
+from models import db, User, Arduino, Schedule, Data
+CORS(app)
 #migrate = Migrate(app, db)
 client = connect('arduino_data')
 
@@ -86,19 +87,25 @@ def register_arduino():
         return "False"
     return jsonify({'api_key': arduino_key})
 
-@app.route('/upload', methods=['POST'])
+@app.route('/upload', methods=['POST', 'GET'])
 def upload():
-    print("Receiving data", request.json)
-    key = request.json.get('api_key')
-    #if not _get_arduino(key):
-    #    return "not_logged"
+    print("Receiving data", request.args)
+    key = request.args.get('api_key')
+    if not _get_arduino(key):
+        return "not_logged"
     try:
         client.deleteOne({"api_key": key})
     except:
         pass
-    request.json['temperature'] = 1
-    request.json['humidity'] = 1
-    record = Data(**request.json)
+    data = {
+        'temperature': request.args.get('temperature'),
+        'humidity': request.args.get('humidity'),
+        'water_temperature': request.args.get('water_temperature'),
+        'water_ph': request.args.get('water_ph'),
+        'water_electrodes': request.args.get('water_electrodes'),
+        'api_key': request.args.get('api_key')
+    }
+    record = Data(**data)
     record.save()
 
     services = Schedule.query.filter_by(arduino=_get_user(key).id)
@@ -136,6 +143,7 @@ def get_data():
 
 @app.route('/set_service', methods=['POST'])
 def set_service():
+    print(request.data)
     key = request.json.get('api_key')
     print(key)
     if not _get_user(key):
@@ -265,7 +273,5 @@ def _get_arduino(api_key):
     return arduino
 
 if __name__ == "__main__":
-    from models import db, User, Arduino, Schedule, Data
-    CORS(app)
     db.init_app(app)
     app.run(host='0.0.0.0')

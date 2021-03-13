@@ -115,7 +115,7 @@ def upload():
     services = Schedule.query.filter_by(arduino=_get_arduino(key))
 
     service_json = dict()
-    now = datetime.utcnow().replace(tzinfo=amsterdam).hour
+    now = datetime.datetime.utcnow().replace(tzinfo=amsterdam).hour
     for service in services:
         active = bool(service.active)
         service_json[service.service] = (dateutil.parser.isoparse(service.start_time).hour <= now <= dateutil.parser.isoparse(service.end_time).hour) or active

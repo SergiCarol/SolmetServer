@@ -114,11 +114,12 @@ def upload():
     service_json = dict()
     now = datetime.datetime.now().hour
     for service in services:
+        print("asijdf", service.start_time)
         print("Start", dateutil.parser.isoparse(service.start_time).hour)
         print("Now", now)
         print("End", dateutil.parser.isoparse(service.end_time).hour)
-        print(service.active)
-        service_json[service.service] = dateutil.parser.isoparse(service.start_time).hour <= now <= dateutil.parser.isoparse(service.end_time).hour
+        active = bool(service.active)
+        service_json[service.service] = (dateutil.parser.isoparse(service.start_time).hour <= now <= dateutil.parser.isoparse(service.end_time).hour) or service.
     print("Returning data", service_json)
     return jsonify(service_json)
 

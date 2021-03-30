@@ -26,7 +26,7 @@ CORS(app)
 client = connect('arduino_data')
 
 SERVICE_OPTIONS = ['water_pump_1', 'water_pump_2', 'fan',
-                   'fan_2', 'air_pump']
+                   'fan_2', 'air_pump', 'lights']
 
 @app.route('/test', methods=['get'])
 def test():
@@ -115,10 +115,10 @@ def upload():
     services = Schedule.query.filter_by(arduino=_get_arduino(key))
 
     service_json = dict()
-    now = datetime.datetime.utcnow().replace(tzinfo=amsterdam).hour
+    now = datetime.datetime.now().hour
     for service in services:
         active = bool(service.active)
-        service_json[service.service] = (dateutil.parser.isoparse(service.start_time).hour <= now <= dateutil.parser.isoparse(service.end_time).hour) or active
+        service_json[service.service] = str((dateutil.parser.isoparse(service.start_time).hour - 2 <= now <= dateutil.parser.isoparse(service.end_time).hour - 2) or active)
     print("Returning data", service_json)
     return jsonify(service_json)
 
